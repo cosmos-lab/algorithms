@@ -1,0 +1,36 @@
+<pre id="output"></pre>
+
+<script>
+  function findExpression(arr, num) {
+    let output = [];
+    const find = (current, index, exp) => {
+      //Check if it is an end of branch
+      if (index == arr.length) {
+        //If current == num at the branch end, it means 'SUCCESS!'
+        if (current == num) {
+          output.push(exp);
+        }
+        return;
+      }
+
+      //Make a recursive branch for + num
+      find(current + arr[index], index + 1, `${exp} + ${arr[index]}`);
+
+      //Make a recursive branch for - num
+      find(current - arr[index], index + 1, `${exp} - ${arr[index]}`);
+    };
+
+    find(0, 0, `${num} = `);
+    return output;
+  }
+
+  const log = (inp) => {
+    document.getElementById("output").innerHTML += "\n\n" + JSON.stringify(inp);
+    console.log(inp);
+  };
+
+  log(findExpression([1, 2, 3, 4, 5], 9));
+  log(findExpression([2, 5, 60, -5, 3], 69));
+  log(findExpression([2, 5, 10], 50));
+</script>
+

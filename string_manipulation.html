@@ -1,0 +1,76 @@
+<pre id="output"></pre>
+
+<script>
+  var findLadders = function (beginWord, endWord, wordList) {
+    const endIndex = wordList.indexOf(endWord);
+    if (endIndex == -1) return;
+
+    //Create a tree with root node 'beginWord'
+    const connects = { [beginWord]: findConnects(beginWord, wordList) };
+
+    //Traverse tree to get all the paths till leaf
+    const paths = getPaths(connects);
+
+    //Find the shortest path(s) group
+    let shortest = [];
+    let shortLength = false;
+    paths.forEach((path) => {
+      if (path[path.length - 1] != endWord) return;
+
+      if (shortLength === false || path.length <= shortLength) {
+        if (path.length == shortLength) {
+          shortest.push(path);
+        } else {
+          shortLength = path.length;
+          shortest = [path];
+        }
+      }
+    });
+
+    return shortest;
+  };
+
+  const getPaths = (object) => {
+    function fetch(object, path) {
+      const keys = Object.keys(object);
+      if (keys.length) {
+        return keys.forEach((k) => {
+          fetch(object[k], path.concat(k));
+        });
+      }
+      result.push(path);
+    }
+    var result = [];
+    fetch(object, []);
+    return result;
+  };
+
+  const findConnects = (matchTo, list) => {
+    const connects = {};
+    list.forEach((word, i) => {
+      if (isMatch(matchTo, word)) {
+        connects[word] = findConnects(word, list.slice(i, list.length));
+      }
+    });
+    return connects;
+  };
+
+  const isMatch = (str1, str2) => {
+    var diff = 0;
+    str1.split("").forEach((chr1, i) => {
+      if (chr1 != str2.charAt(i)) diff++;
+    });
+    return diff == 1;
+  };
+
+  const log = (inp) => {
+    document.getElementById("output").innerHTML += "\n\n" + JSON.stringify(inp);
+    console.log(inp);
+  };
+
+  log(findLadders("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]));
+
+  log(
+    findLadders("hit", "cog", ["mit", "hot", "dot", "dog", "lot", "log", "cog"])
+  );
+</script>
